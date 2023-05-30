@@ -127,9 +127,9 @@ contract BlackJack {
     */
     function DealCards(Game storage game) private {
         // Clear previous states
-        game.PlayerHand = [];
+        delete game.PlayerHand;
         game.PlayerCardTotal = 0;
-        game.DealerHand = [];
+        delete game.DealerHand;
         game.DealerCardTotal = 0;
         game.PlayerAce = 0;
         game.DealerAce = 0;
