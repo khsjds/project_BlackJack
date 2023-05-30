@@ -20,20 +20,18 @@ contract BlackJack {
         address Player;
         // player states
         uint256 PlayerBet;
-        uint256 PlayerCard1;
-        uint256 PlayerCard2;
-        uint256 PlayerNewCard;
+        uint256[] PlayerHand;
         uint256 PlayerCardTotal;
         // dealer states
-        uint256 DealerCard1;
-        uint256 DealerCard2;
-        uint256 DealerNewCard;
+        uint256[] DealerHand;
         uint256 DealerCardTotal;
         // game states
         uint256 SafeBalance;
         uint256 OriginalBalance;
         uint256 GamesPlayed;
-        bool HasAce;
+        //bool HasAce;
+        uint8 PlayerAce;
+        uint8 DealerAce;
         bool IsRoundInProgress;
         string GameMsg;
     }
@@ -50,6 +48,7 @@ contract BlackJack {
     address immutable private _owner;
     mapping(address => uint256) private _map_playerToGame;
     mapping(uint256 => Game) private _map_idToGame;
+    uint8[13] cardValues = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10];
 
     /**
      Events that Log important states (start game, and cash out/transfer)
@@ -106,12 +105,12 @@ contract BlackJack {
     }
 
     /**
-     @title GenerateRandomNumber
-     Generates a random number between 1 and 13.
+     @title GenerateRandomCard
+     Generates a random number between 0 and 51 which represents a card in the deck.
     */
-    function GenerateRandomNumber() private returns (uint256 randomNumber) {
+    function GenerateRandomCard() private returns (uint256 randomNumber) {
         _rngNonce *= 3;
-        randomNumber = uint256(keccak256(abi.encodePacked(blockhash(block.timestamp), _rngNonce))) % 13 + 1;
+        randomNumber = uint256(keccak256(abi.encodePacked(blockhash(block.timestamp), _rngNonce))) % 52;
 
         _rngNonce++;
         
@@ -122,63 +121,47 @@ contract BlackJack {
 
     ////////// Core game functions //////////
     /**
-     @title GetCard
-     Get a card from the deck. Joker(11), Queen(12), King(13) each worth 10 points.
-    */
-    function GetCard() private returns (uint256 cardValue) {
-        cardValue = GenerateRandomNumber();
-        if(cardValue > 10)
-            cardValue = 10;
-    }
-
-    /**
      @title DealCards
      Deals first 2 cards and handle BlackJack, dealer doesn't have card 2 by now.
      @param game Ongoing game ID.
     */
     function DealCards(Game storage game) private {
         // Clear previous states
-        game.PlayerCard1 = 0;
-        game.PlayerCard2 = 0;
-        game.PlayerNewCard = 0;
+        game.PlayerHand = [];
         game.PlayerCardTotal = 0;
-        game.DealerCard1 = 0;
-        game.DealerCard2 = 0;
-        game.DealerNewCard = 0;
+        game.DealerHand = [];
         game.DealerCardTotal = 0;
-        game.HasAce = false;
+        game.PlayerAce = 0;
+        game.DealerAce = 0;
         
         // Card 1
-        game.PlayerCard1 = GetCard();
-        game.DealerCard1 = GetCard();
+        game.PlayerHand.push(GenerateRandomCard());
+        game.DealerHand.push(GenerateRandomCard());
         // if Ace
-        if(game.PlayerCard1 == 1) {
-            game.PlayerCard1 = 11;
-            game.HasAce = true;
-        }
-        if(game.DealerCard1 == 1) 
-            game.DealerCard1 = 11;
+        if(game.PlayerHand[0]%13 == 0)
+            game.PlayerAce += 1;
+        if(game.DealerHand[0]%13 == 0) 
+            game.DealerAce += 1;
         
         // Card 2 for player -- dealer gets card in his round only
-        game.PlayerCard2 = GetCard();
-        if(game.PlayerCard2 == 1 && game.PlayerCard1 < 11) { // if card 2 is Ace
-            game.PlayerCard2 = 11;
-            game.HasAce = true;
-        }
+        game.PlayerHand.push(GenerateRandomCard());
+        if(game.PlayerHand[1]%13 == 0)  // if card 2 is Ace
+            game.PlayerAce += 1;
+        
         
         // Card totals
-        game.PlayerCardTotal = game.PlayerCard1 + game.PlayerCard2;
-        game.DealerCardTotal = game.DealerCard1 + game.DealerCard2; // Card 2 is zero by now
+        game.PlayerCardTotal = cardValues[game.PlayerHand[0]] + cardValues[game.PlayerHand[1]];
+        game.DealerCardTotal = cardValues[game.DealerHand[0]];
+        if(game.PlayerCardTotal > 21 && game.PlayerAce > 0) {
+            game.PlayerCardTotal -= 10;
+            game.PlayerAce -= 1;
+        }
         
         // BlackJack!
         if(game.PlayerCardTotal == 21) {
             // Check standoff
-            game.DealerCard2 = GetCard();
-            if(game.DealerCard1 == 10 && game.DealerCard2 == 1) {
-                game.DealerCard2 = 11;
-                
-                game.DealerCardTotal = game.DealerCard1 + game.DealerCard2;
-            }
+            game.DealerHand.push(GenerateRandomCard());
+            game.DealerCardTotal += cardValues[game.DealerHand[1]];
             // Identify winner
             if(game.DealerCardTotal == game.PlayerCardTotal) {
                 game.GameMsg = "StandOff!";
@@ -203,18 +186,20 @@ contract BlackJack {
         Game storage game = _map_idToGame[_map_playerToGame[msg.sender]];
 
         require(game.IsRoundInProgress, "Available on player's turn only.");
-        game.PlayerNewCard = GetCard();
+        game.PlayerHand.push(GenerateRandomCard());
         // If Ace
-        if(game.PlayerNewCard == 1 && game.PlayerCardTotal < 11) {
-            game.PlayerNewCard = 11;
-            game.HasAce = true;
-        }
+        if(game.PlayerHand[game.PlayerHand.length-1]%13 == 0) 
+            game.PlayerAce += 1;
 
-        game.PlayerCardTotal += game.PlayerNewCard;
-        if(game.PlayerCardTotal > 21) { // Bust
+        game.PlayerCardTotal += cardValues[game.PlayerHand[game.PlayerHand.length-1]];
+        if(game.PlayerCardTotal > 21 && game.PlayerAce < 1) { // Bust
             game.GameMsg = "Player Bust.";
             game.IsRoundInProgress = false;
         } else {
+            if(game.PlayerCardTotal > 21) {
+                game.PlayerCardTotal -= 10;
+                game.PlayerAce -= 1;
+            }
             game.GameMsg = "Player's Turn.";
         }
     }
@@ -230,30 +215,31 @@ contract BlackJack {
 
         require(game.IsRoundInProgress, "Available on player's turn only.");
         // Show Dealer Card 2
-        game.DealerCard2 = GetCard();
+        game.DealerHand.push(GenerateRandomCard());
         // Ace
-        if(game.DealerCard2 == 1 && game.DealerCard1 < 11)
-            game.DealerCard2 = 11; 
-        
+        if(game.DealerHand[1]%13 == 0)
+            game.DealerAce += 1;
         // Update card Total
-        game.DealerCardTotal = game.DealerCard1 + game.DealerCard2;       
+        game.DealerCardTotal += cardValues[game.DealerHand[1]];
         
         // Dealer must Stand on all 17s
         while(game.DealerCardTotal < 17) {
-            game.DealerNewCard = GetCard();
+            game.DealerHand.push(GenerateRandomCard());
             // Ace
-            if(game.DealerNewCard == 1 && game.DealerCardTotal < 11)
-                game.DealerNewCard = 11;
-            
-            game.DealerCardTotal += game.DealerNewCard;
+            if(game.DealerHand[game.DealerHand.length-1]%13 == 0)
+                game.DealerAce += 1;
+
+            game.DealerCardTotal += cardValues[game.DealerHand[game.DealerHand.length-1]];
         }
 
         // check winner from here //        
-        if(game.DealerCardTotal > 21) {
+        if(game.DealerCardTotal > 21 && game.DealerAce < 1) {
             game.GameMsg = "Dealer Bust. Player Wins.";
             game.IsRoundInProgress = false;
             game.SafeBalance += (game.PlayerBet * 2); // Update balance: bet * 2
-
+        } else if(game.DealerCardTotal > 21) {
+            game.DealerCardTotal -= 10;
+            game.DealerAce -= 1;
         } else if(game.DealerCardTotal == 21) {
             // check standoff
             if(game.PlayerCardTotal == 21) {
@@ -366,22 +352,26 @@ contract BlackJack {
      @dev ShowTable - helper function to display game info for msg.sender.
     */
     function ShowTable() external view returns (
-            string memory GameMessage,   string memory PlayerCard1, string memory PlayerCard2, string memory PlayerNewCard,
-            string memory PlayerCardTotal, string memory DealerCard1, string memory DealerCard2, string memory DealerNewCard,
-            string memory DealerCardTotal, string memory PlayerBet,   string memory BetPot) {
+            string memory GameMessage,     string memory PlayerHand, string memory PlayerCardTotal, string memory DealerHand,
+            string memory DealerCardTotal, string memory PlayerBet,  string memory BetPot,
+            uint256[] memory pHand, uint256[] memory dHand) {
 
         Game memory game = _map_idToGame[_map_playerToGame[msg.sender]];
         
         GameMessage = string.concat(" --> ", game.GameMsg);
-        PlayerCard1 = string.concat(" --> ", Strings.toString(game.PlayerCard1));
-        PlayerCard2 = string.concat(" --> ", Strings.toString(game.PlayerCard2));
-        PlayerNewCard = string.concat(" --> ", Strings.toString(game.PlayerNewCard));
+        PlayerHand = " --> ";
+        for (uint i = 0; i < game.PlayerHand.length; i++) {
+            PlayerHand = string.concat(PlayerHand, Strings.toString(game.PlayerHand[i]), " ");
+        }
         PlayerCardTotal = string.concat(" ------> ", Strings.toString(game.PlayerCardTotal));
-        DealerCard1 = string.concat(" --> ", Strings.toString(game.DealerCard1));
-        DealerCard2 = string.concat(" --> ", Strings.toString(game.DealerCard2));
-        DealerNewCard = string.concat(" --> ", Strings.toString(game.DealerNewCard));
+        DealerHand = " --> ";
+        for (uint i = 0; i < game.DealerHand.length; i++) {
+            DealerHand = string.concat(DealerHand, Strings.toString(game.DealerHand[i]), " ");
+        }
         DealerCardTotal = string.concat(" ------> ", Strings.toString(game.DealerCardTotal));
         PlayerBet = string.concat(" --> ", Strings.toString(game.PlayerBet), " wei");
         BetPot = string.concat(" --> ", Strings.toString(game.SafeBalance), " wei");
+        pHand = game.PlayerHand;
+        dHand = game.DealerHand;
     }
 }
