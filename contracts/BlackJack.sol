@@ -366,13 +366,13 @@ contract BlackJack {
      @dev ShowTable - helper function to display game info for msg.sender.
     */
     function ShowTable() external view returns (
-            string memory DealerMessage,   string memory PlayerCard1, string memory PlayerCard2, string memory PlayerNewCard,
+            string memory GameMessage,   string memory PlayerCard1, string memory PlayerCard2, string memory PlayerNewCard,
             string memory PlayerCardTotal, string memory DealerCard1, string memory DealerCard2, string memory DealerNewCard,
             string memory DealerCardTotal, string memory PlayerBet,   string memory BetPot) {
 
         Game memory game = _map_idToGame[_map_playerToGame[msg.sender]];
         
-        DealerMessage = string.concat(" --> ", game.GameMsg);
+        GameMessage = string.concat(" --> ", game.GameMsg);
         PlayerCard1 = string.concat(" --> ", Strings.toString(game.PlayerCard1));
         PlayerCard2 = string.concat(" --> ", Strings.toString(game.PlayerCard2));
         PlayerNewCard = string.concat(" --> ", Strings.toString(game.PlayerNewCard));
