@@ -61,14 +61,8 @@ class App extends Component {
         this.setState({
             stage: gameTable.GameMessage,
             maxBet: gameTable.BetPot,
-            //dealerHand: responseDealer.hand,
-            dealerCard1: gameTable.DealerCard1,
-            dealerCard2: gameTable.DealerCard2,
-            dealerNewCard: gameTable.DealerNewCard,
-            //playerHand: responsePlayer.hand,
-            playerCard1: gameTable.PlayerCard1,
-            playerCard2: gameTable.PlayerCard2,
-            playerNewCard: gameTable.PlayerNewCard,
+            dealerHand: gameTable.dHand,
+            playerHand: gameTable.pHand,
             dealerScore: gameTable.DealerCardTotal,
             handScore: gameTable.PlayerCardTotal,
             bet: gameTable.PlayerBet,
@@ -84,14 +78,8 @@ class App extends Component {
         this.setState({
             stage: gameTable.GameMessage,
             maxBet: gameTable.BetPot,
-            //dealerHand: responseDealer.hand,
-            dealerCard1: gameTable.DealerCard1,
-            dealerCard2: gameTable.DealerCard2,
-            dealerNewCard: gameTable.DealerNewCard,
-            //playerHand: responsePlayer.hand,
-            playerCard1: gameTable.PlayerCard1,
-            playerCard2: gameTable.PlayerCard2,
-            playerNewCard: gameTable.PlayerNewCard,
+            dealerHand: gameTable.dHand,
+            playerHand: gameTable.pHand,
             dealerScore: gameTable.DealerCardTotal,
             handScore: gameTable.PlayerCardTotal,
             bet: gameTable.PlayerBet,
@@ -108,14 +96,8 @@ class App extends Component {
         this.setState({
             stage: gameTable.GameMessage,
             maxBet: gameTable.BetPot,
-            //dealerHand: responseDealer.hand,
-            dealerCard1: gameTable.DealerCard1,
-            dealerCard2: gameTable.DealerCard2,
-            dealerNewCard: gameTable.DealerNewCard,
-            //playerHand: responsePlayer.hand,
-            playerCard1: gameTable.PlayerCard1,
-            playerCard2: gameTable.PlayerCard2,
-            playerNewCard: gameTable.PlayerNewCard,
+            dealerHand: gameTable.dHand,
+            playerHand: gameTable.pHand,
             dealerScore: gameTable.DealerCardTotal,
             handScore: gameTable.PlayerCardTotal,
             bet: gameTable.PlayerBet,
@@ -133,14 +115,8 @@ class App extends Component {
         this.setState({
             stage: gameTable.GameMessage,
             maxBet: gameTable.BetPot,
-            //dealerHand: responseDealer.hand,
-            dealerCard1: gameTable.DealerCard1,
-            dealerCard2: gameTable.DealerCard2,
-            dealerNewCard: gameTable.DealerNewCard,
-            //playerHand: responsePlayer.hand,
-            playerCard1: gameTable.PlayerCard1,
-            playerCard2: gameTable.PlayerCard2,
-            playerNewCard: gameTable.PlayerNewCard,
+            dealerHand: gameTable.dHand,
+            playerHand: gameTable.pHand,
             dealerScore: gameTable.DealerCardTotal,
             handScore: gameTable.PlayerCardTotal,
             bet: gameTable.PlayerBet,
@@ -157,6 +133,7 @@ class App extends Component {
         if (this.state.stage === "") {
             newGameButton = <button onClick={this.newGame.bind(this)}>New Game</button>;
         }
+        
         let standButton;
         if (this.state.stage === "Player's Turn.") {
             standButton = <button onClick={this.stand.bind(this)}>Stand</button>;
