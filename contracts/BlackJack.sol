@@ -20,11 +20,11 @@ contract BlackJack {
         address Player;
         // player states
         uint256 PlayerBet;
-        uint256[] PlayerHand;
-        uint256 PlayerCardTotal;
+        uint8[] PlayerHand;
+        uint8 PlayerCardTotal;
         // dealer states
-        uint256[] DealerHand;
-        uint256 DealerCardTotal;
+        uint8[] DealerHand;
+        uint8 DealerCardTotal;
         // game states
         uint256 SafeBalance;
         uint256 OriginalBalance;
@@ -352,26 +352,17 @@ contract BlackJack {
      @dev ShowTable - helper function to display game info for msg.sender.
     */
     function ShowTable() external view returns (
-            string memory GameMessage,     string memory PlayerHand, string memory PlayerCardTotal, string memory DealerHand,
-            string memory DealerCardTotal, string memory PlayerBet,  string memory BetPot,
-            uint256[] memory pHand, uint256[] memory dHand) {
+            string memory GameMessage,    uint8[] memory PlayerHand, uint8 memory PlayerCardTotal, uint8[] memory DealerHand,
+            uint8 memory DealerCardTotal, uint256 memory PlayerBet,   uint256 memory BetPot) {
 
         Game memory game = _map_idToGame[_map_playerToGame[msg.sender]];
         
-        GameMessage = string.concat(" --> ", game.GameMsg);
-        PlayerHand = " --> ";
-        for (uint i = 0; i < game.PlayerHand.length; i++) {
-            PlayerHand = string.concat(PlayerHand, Strings.toString(game.PlayerHand[i]), " ");
-        }
-        PlayerCardTotal = string.concat(" ------> ", Strings.toString(game.PlayerCardTotal));
-        DealerHand = " --> ";
-        for (uint i = 0; i < game.DealerHand.length; i++) {
-            DealerHand = string.concat(DealerHand, Strings.toString(game.DealerHand[i]), " ");
-        }
-        DealerCardTotal = string.concat(" ------> ", Strings.toString(game.DealerCardTotal));
-        PlayerBet = string.concat(" --> ", Strings.toString(game.PlayerBet), " wei");
-        BetPot = string.concat(" --> ", Strings.toString(game.SafeBalance), " wei");
-        pHand = game.PlayerHand;
-        dHand = game.DealerHand;
+        GameMessage = game.GameMsg;
+        PlayerHand = game.PlayerHand;
+        PlayerCardTotal = game.PlayerCardTotal;
+        DealerHand = game.DealerHand;
+        DealerCardTotal = game.DealerCardTotal;
+        PlayerBet = game.PlayerBet;
+        BetPot = game.SafeBalance;
     }
 }

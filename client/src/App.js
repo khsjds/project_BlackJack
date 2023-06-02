@@ -8,7 +8,7 @@ class App extends Component {
 
     constructor(){
         super();
-        this.state = { safeBalance: '', betValue: '', web3: null, playerAccount: null, game: null , dealerCard1: '', dealerCard2: '', dealerNewCard: '', dealerTotal: '', playerCard1: '', playerCard2: '', playerNewCard: '', playerTotal: '', GameMessage: ''};
+        this.state = { safeBalance: '', betValue: '', web3: null, playerAccount: null, game: null , dealerHand: [], playerHand: []};
         this.onChange = this.onChange.bind(this)
     }
 
@@ -61,8 +61,8 @@ class App extends Component {
         this.setState({
             stage: gameTable.GameMessage,
             maxBet: gameTable.BetPot,
-            dealerHand: gameTable.dHand,
-            playerHand: gameTable.pHand,
+            dealerHand: gameTable.DealerHand,
+            playerHand: gameTable.PlayerHand,
             dealerScore: gameTable.DealerCardTotal,
             handScore: gameTable.PlayerCardTotal,
             bet: gameTable.PlayerBet,
@@ -78,8 +78,8 @@ class App extends Component {
         this.setState({
             stage: gameTable.GameMessage,
             maxBet: gameTable.BetPot,
-            dealerHand: gameTable.dHand,
-            playerHand: gameTable.pHand,
+            dealerHand: gameTable.DealerHand,
+            playerHand: gameTable.PlayerHand,
             dealerScore: gameTable.DealerCardTotal,
             handScore: gameTable.PlayerCardTotal,
             bet: gameTable.PlayerBet,
@@ -96,8 +96,8 @@ class App extends Component {
         this.setState({
             stage: gameTable.GameMessage,
             maxBet: gameTable.BetPot,
-            dealerHand: gameTable.dHand,
-            playerHand: gameTable.pHand,
+            dealerHand: gameTable.DealerHand,
+            playerHand: gameTable.PlayerHand,
             dealerScore: gameTable.DealerCardTotal,
             handScore: gameTable.PlayerCardTotal,
             bet: gameTable.PlayerBet,
@@ -115,8 +115,8 @@ class App extends Component {
         this.setState({
             stage: gameTable.GameMessage,
             maxBet: gameTable.BetPot,
-            dealerHand: gameTable.dHand,
-            playerHand: gameTable.pHand,
+            dealerHand: gameTable.DealerHand,
+            playerHand: gameTable.PlayerHand,
             dealerScore: gameTable.DealerCardTotal,
             handScore: gameTable.PlayerCardTotal,
             bet: gameTable.PlayerBet,
@@ -174,7 +174,7 @@ class App extends Component {
 
                 <br/><br/>
 
-            Your deposit: <input value={this.state.betValue}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Your deposit: <input value={this.state.safeBalance}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 {newGameButton}
 
                 <br/><br/>
@@ -196,7 +196,7 @@ class App extends Component {
 
                 <br/><br/>
 
-            Place your bet: <input value={this.state.safeBalance} onChange={this.onChange}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Place your bet: <input value={this.state.betValue} onChange={this.onChange}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button onClick={this.placeBet.bind(this)}>Deal</button>
                 <br/>
                 <div> Maximum bet: {this.state.maxBet} wei</div>
