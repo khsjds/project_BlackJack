@@ -59,7 +59,7 @@ contract BlackJack {
     event AfterCashOutEvent(address indexed Player);
     
     /**
-     @title IsValidAddr
+     @dev IsValidAddr
      A modifier that checks if the user's address is valid.
     */
     modifier IsValidAddr() {
@@ -83,7 +83,7 @@ contract BlackJack {
     }
     
     /**
-     @title NewGame
+     @dev NewGame
      Starts and initializes a new game with a player using msg.sender's address.
     */
     function NewGame() external payable {
@@ -105,7 +105,7 @@ contract BlackJack {
     }
 
     /**
-     @title GenerateRandomCard
+     @dev GenerateRandomCard
      Generates a random number between 0 and 51 which represents a card in the deck.
     */
     function GenerateRandomCard() private returns (uint256 randomNumber) {
@@ -121,7 +121,7 @@ contract BlackJack {
 
     ////////// Core game functions //////////
     /**
-     @title DealCards
+     @dev DealCards
      Deals first 2 cards and handle BlackJack, dealer doesn't have card 2 by now.
      @param game Ongoing game ID.
     */
@@ -145,13 +145,13 @@ contract BlackJack {
         
         // Card 2 for player -- dealer gets card in his round only
         game.PlayerHand.push(GenerateRandomCard());
-        if(game.PlayerHand[1]%13 == 0)  // if card 2 is Ace
+        if(game.PlayerHand[1]%13 == 0) { // if card 2 is Ace
             game.PlayerAce += 1;
-        
+        }
         
         // Card totals
-        game.PlayerCardTotal = cardValues[game.PlayerHand[0]] + cardValues[game.PlayerHand[1]];
-        game.DealerCardTotal = cardValues[game.DealerHand[0]];
+        game.PlayerCardTotal = cardValues[game.PlayerHand[0]%13] + cardValues[game.PlayerHand[1]%13];
+        game.DealerCardTotal = cardValues[game.DealerHand[0]%13];
         if(game.PlayerCardTotal > 21 && game.PlayerAce > 0) {
             game.PlayerCardTotal -= 10;
             game.PlayerAce -= 1;
@@ -161,7 +161,7 @@ contract BlackJack {
         if(game.PlayerCardTotal == 21) {
             // Check standoff
             game.DealerHand.push(GenerateRandomCard());
-            game.DealerCardTotal += cardValues[game.DealerHand[1]];
+            game.DealerCardTotal += cardValues[game.DealerHand[1]%13];
             // Identify winner
             if(game.DealerCardTotal == game.PlayerCardTotal) {
                 game.GameMsg = "StandOff!";
@@ -178,7 +178,7 @@ contract BlackJack {
     }
     
     /**
-     @title Hit
+     @dev Hit
      Called on player's turn: draw a card and check for hands.
     */
     function Hit() IsValidAddr external {
@@ -191,7 +191,7 @@ contract BlackJack {
         if(game.PlayerHand[game.PlayerHand.length-1]%13 == 0) 
             game.PlayerAce += 1;
 
-        game.PlayerCardTotal += cardValues[game.PlayerHand[game.PlayerHand.length-1]];
+        game.PlayerCardTotal += cardValues[game.PlayerHand[game.PlayerHand.length-1]%13];
         if(game.PlayerCardTotal > 21 && game.PlayerAce < 1) { // Bust
             game.GameMsg = "Player Bust.";
             game.IsRoundInProgress = false;
@@ -205,7 +205,7 @@ contract BlackJack {
     }
     
     /**
-     @title Stand
+     @dev Stand
      Called on player's turn: End player's turns and play dealer's hand.
      Dealer draws cards until 17 or bust, then check winner.
     */
@@ -220,7 +220,7 @@ contract BlackJack {
         if(game.DealerHand[1]%13 == 0)
             game.DealerAce += 1;
         // Update card Total
-        game.DealerCardTotal += cardValues[game.DealerHand[1]];
+        game.DealerCardTotal += cardValues[game.DealerHand[1]%13];
         
         // Dealer must Stand on all 17s
         while(game.DealerCardTotal < 17) {
@@ -229,7 +229,7 @@ contract BlackJack {
             if(game.DealerHand[game.DealerHand.length-1]%13 == 0)
                 game.DealerAce += 1;
 
-            game.DealerCardTotal += cardValues[game.DealerHand[game.DealerHand.length-1]];
+            game.DealerCardTotal += cardValues[game.DealerHand[game.DealerHand.length-1]%13];
         }
 
         // check winner from here //        
@@ -267,7 +267,7 @@ contract BlackJack {
     }
 
     /**
-     @title PlaceBet
+     @dev PlaceBet
      Begins a new game round that saves game states including balance, bet and number of games.
      @param bet Requires 100 GWei < bet < 1 Ether to start a new round.
     */
@@ -288,7 +288,7 @@ contract BlackJack {
 
     ////////// Cash flow functions //////////
     /**
-     @title CashOut
+     @dev CashOut
      Cash out function for player before or after a game round.
     */
     function CashOut() IsValidAddr external {
@@ -310,7 +310,7 @@ contract BlackJack {
     }
 
     /**
-     @title BeforeValueTransfer
+     @dev BeforeValueTransfer
      @param playerAddress Player address to transfer value to.
     */
     function BeforeValueTransfer(address playerAddress) private {
@@ -326,7 +326,7 @@ contract BlackJack {
     }
 
     /**
-     @title AfterValueTransfer
+     @dev AfterValueTransfer
      @param playerAddress Player address to transfer value to.
     */
     function AfterValueTransfer(address playerAddress) private {

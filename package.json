@@ -20,9 +20,9 @@
   },
   "homepage": "https://github.com/0x9060/blackjack#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "^3.2.0",
-    "@truffle/hdwallet-provider": "^1.2.0",
-    "ganache-cli": "^6.12.1",
-    "truffle": "^5.1.54"
+    "@openzeppelin/contracts": "^4.9.0",
+    "@truffle/hdwallet-provider": "^1.7.0",
+    "ganache-cli": "^6.12.2",
+    "truffle": "^5.9.2"
   }
 }
