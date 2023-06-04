@@ -108,9 +108,9 @@ contract BlackJack {
      @dev GenerateRandomCard
      Generates a random number between 0 and 51 which represents a card in the deck.
     */
-    function GenerateRandomCard() private returns (uint256 randomNumber) {
+    function GenerateRandomCard() private returns (uint8 randomNumber) {
         _rngNonce *= 3;
-        randomNumber = uint256(keccak256(abi.encodePacked(blockhash(block.timestamp), _rngNonce))) % 52;
+        randomNumber = uint8(uint256(keccak256(abi.encodePacked(blockhash(block.timestamp), _rngNonce))) % 52);
 
         _rngNonce++;
         
