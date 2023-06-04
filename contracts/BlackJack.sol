@@ -352,8 +352,8 @@ contract BlackJack {
      @dev ShowTable - helper function to display game info for msg.sender.
     */
     function ShowTable() external view returns (
-            string memory GameMessage,    uint8[] memory PlayerHand, uint8 memory PlayerCardTotal, uint8[] memory DealerHand,
-            uint8 memory DealerCardTotal, uint256 memory PlayerBet,   uint256 memory BetPot) {
+            string memory GameMessage,    uint8[] memory PlayerHand, uint8 PlayerCardTotal, uint8[] memory DealerHand,
+            uint8 DealerCardTotal, uint256 PlayerBet,   uint256 BetPot) {
 
         Game memory game = _map_idToGame[_map_playerToGame[msg.sender]];
         
