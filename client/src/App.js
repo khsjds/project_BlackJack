@@ -9,7 +9,15 @@ class App extends Component {
     constructor(){
         super();
         this.state = { safeBalance: '', betValue: '', web3: null, playerAccount: null, game: null , dealerHand: [], playerHand: []};
-        this.onChange = this.onChange.bind(this)
+        this.onChange = this.onChange.bind(this);
+        this.onChangeDep = this.onChangeDep.bind(this);
+    }
+
+    onChangeDep(e){
+        const re = /^[0-9\b]+$/;
+        if (e.target.value === '' || re.test(e.target.value)) {
+            this.setState({safeBalance: e.target.value})
+        }
     }
 
     onChange(e){
@@ -36,7 +44,7 @@ class App extends Component {
             // Set web3, accounts, and contract to the state, and then proceed with an
             // example of interacting with the contract's methods.
             const responseGame = await gameInstance.methods.ShowTable().call();
-            this.setState({ web3, playerAccount, game: gameInstance, maxBet: responseGame.BetPot });
+            this.setState({ web3, playerAccount, game: gameInstance, safeBalance: responseGame.BetPot });
 
         } catch (error) {
             // Catch any errors for any of the above operations.
@@ -60,7 +68,7 @@ class App extends Component {
 
         this.setState({
             stage: gameTable.GameMessage,
-            maxBet: gameTable.BetPot,
+            safeBalance: gameTable.BetPot,
             dealerHand: gameTable.DealerHand,
             playerHand: gameTable.PlayerHand,
             dealerScore: gameTable.DealerCardTotal,
@@ -77,7 +85,7 @@ class App extends Component {
 
         this.setState({
             stage: gameTable.GameMessage,
-            maxBet: gameTable.BetPot,
+            safeBalance: gameTable.BetPot,
             dealerHand: gameTable.DealerHand,
             playerHand: gameTable.PlayerHand,
             dealerScore: gameTable.DealerCardTotal,
@@ -95,7 +103,7 @@ class App extends Component {
 
         this.setState({
             stage: gameTable.GameMessage,
-            maxBet: gameTable.BetPot,
+            safeBalance: gameTable.BetPot,
             dealerHand: gameTable.DealerHand,
             playerHand: gameTable.PlayerHand,
             dealerScore: gameTable.DealerCardTotal,
@@ -114,7 +122,7 @@ class App extends Component {
 
         this.setState({
             stage: gameTable.GameMessage,
-            maxBet: gameTable.BetPot,
+            safeBalance: gameTable.BetPot,
             dealerHand: gameTable.DealerHand,
             playerHand: gameTable.PlayerHand,
             dealerScore: gameTable.DealerCardTotal,
@@ -126,13 +134,12 @@ class App extends Component {
 
     render() {
         const rankStrings = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
-        const rankValues = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
         const suitStrings = [String.fromCharCode(9827), String.fromCharCode(9830), String.fromCharCode(9829), String.fromCharCode(9824)]
 
         let newGameButton;
-        if (this.state.stage === "") {
+//        if (this.state.stage === "") {
             newGameButton = <button onClick={this.newGame.bind(this)}>New Game</button>;
-        }
+//        }
         
         let standButton;
         if (this.state.stage === "Player's Turn.") {
@@ -174,21 +181,21 @@ class App extends Component {
 
                 <br/><br/>
 
-            Your deposit: <input value={this.state.safeBalance}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Your deposit: <input value={this.state.safeBalance} onChange={this.onChangeDep}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 {newGameButton}
 
                 <br/><br/>
 
                 <h3>Dealer:</h3>
 
-                <table align="center" style={{'font-size': "24px"}}><tbody><tr>{dealerCards}</tr></tbody></table>
+                <table align="center" style={{'fontSize': "24px"}}><tbody><tr>{dealerCards}</tr></tbody></table>
                 <table align="center"><tbody><tr>{dealerScore}</tr></tbody></table>
 
                 <br/><br/>
 
                 <h3>Your Cards:</h3>
 
-                <table align="center" style={{'font-size': "24px"}}><tbody><tr>{playerCards}</tr></tbody></table>
+                <table align="center" style={{'fontSize': "24px"}}><tbody><tr>{playerCards}</tr></tbody></table>
                 <table align="center"><tbody><tr>{playerScore}{playerBet}</tr></tbody></table>
 
             {standButton}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -199,7 +206,7 @@ class App extends Component {
             Place your bet: <input value={this.state.betValue} onChange={this.onChange}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button onClick={this.placeBet.bind(this)}>Deal</button>
                 <br/>
-                <div> Maximum bet: {this.state.maxBet} wei</div>
+                <div> Maximum bet: {this.state.safeBalance} wei</div>
                 <br/>
                 <i>(connected account: {this.state.playerAccount})</i>
 
