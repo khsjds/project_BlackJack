@@ -108,9 +108,9 @@ contract BlackJack {
      @dev GenerateRandomCard
      Generates a random number between 0 and 51 which represents a card in the deck.
     */
-    function GenerateRandomCard() private returns (uint256 randomNumber) {
+    function GenerateRandomCard() private returns (uint8 randomNumber) {
         _rngNonce *= 3;
-        randomNumber = uint256(keccak256(abi.encodePacked(blockhash(block.timestamp), _rngNonce))) % 52;
+        randomNumber = uint8(uint256(keccak256(abi.encodePacked(blockhash(block.timestamp), _rngNonce))) % 52);
 
         _rngNonce++;
         
@@ -352,8 +352,8 @@ contract BlackJack {
      @dev ShowTable - helper function to display game info for msg.sender.
     */
     function ShowTable() external view returns (
-            string memory GameMessage,    uint8[] memory PlayerHand, uint8 memory PlayerCardTotal, uint8[] memory DealerHand,
-            uint8 memory DealerCardTotal, uint256 memory PlayerBet,   uint256 memory BetPot) {
+            string memory GameMessage,    uint8[] memory PlayerHand, uint8  PlayerCardTotal, uint8[] memory DealerHand,
+            uint8  DealerCardTotal, uint256  PlayerBet,   uint256  BetPot) {
 
         Game memory game = _map_idToGame[_map_playerToGame[msg.sender]];
         

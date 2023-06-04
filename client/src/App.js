@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import BlackjackContract from "./contracts/Blackjack.json";
+import BlackjackContract from "./contracts/BlackJack.json";
 import getWeb3 from "./getWeb3";
 
 import "./App.css";
