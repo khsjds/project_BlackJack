@@ -8,7 +8,7 @@ class App extends Component {
 
     constructor(){
         super();
-        this.state = { safeBalance: '', betValue: '', web3: null, playerAccount: null, game: null , dealerHand: [], playerHand: []};
+        this.state = {setDeposit: '', safeBalance: '', betValue: '', web3: null, playerAccount: null, game: null , dealerHand: [], playerHand: []};
         this.onChange = this.onChange.bind(this);
         this.onChangeDep = this.onChangeDep.bind(this);
     }
@@ -16,7 +16,7 @@ class App extends Component {
     onChangeDep(e){
         const re = /^[0-9\b]+$/;
         if (e.target.value === '' || re.test(e.target.value)) {
-            this.setState({safeBalance: e.target.value})
+            this.setState({setDeposit: e.target.value})
         }
     }
 
@@ -43,8 +43,8 @@ class App extends Component {
             );
             // Set web3, accounts, and contract to the state, and then proceed with an
             // example of interacting with the contract's methods.
-            const responseGame = await gameInstance.methods.ShowTable().call();
-            this.setState({ web3, playerAccount, game: gameInstance, safeBalance: responseGame.BetPot });
+            const gameTable = await gameInstance.methods.ShowTable().call();
+            this.setState({ web3, playerAccount, game: gameInstance, safeBalance: gameTable.BetPot, gameMessage: gameTable.GameMessage});
 
         } catch (error) {
             // Catch any errors for any of the above operations.
@@ -55,19 +55,15 @@ class App extends Component {
         }
     };
 
-    //cashOut = async () => {
-    //getGame = async () => {
-    //showTable = async () => {
-
     newGame = async () => {
         const { playerAccount , game } = this.state;
 
-        await game.methods.NewGame().send({ from: playerAccount, value: this.state.safeBalance, gas: 450000 });
+        await game.methods.NewGame().send({ from: playerAccount, value: this.state.setDeposit, gas: 450000 });
 
         const gameTable = await game.methods.ShowTable().call();
 
         this.setState({
-            stage: gameTable.GameMessage,
+            gameMessage: gameTable.GameMessage,
             safeBalance: gameTable.BetPot,
             dealerHand: gameTable.DealerHand,
             playerHand: gameTable.PlayerHand,
@@ -76,6 +72,7 @@ class App extends Component {
             bet: gameTable.PlayerBet,
         });
     };
+
     placeBet = async () => {
         const { playerAccount , game } = this.state;
 
@@ -84,7 +81,7 @@ class App extends Component {
         const gameTable = await game.methods.ShowTable().call();
 
         this.setState({
-            stage: gameTable.GameMessage,
+            gameMessage: gameTable.GameMessage,
             safeBalance: gameTable.BetPot,
             dealerHand: gameTable.DealerHand,
             playerHand: gameTable.PlayerHand,
@@ -102,7 +99,7 @@ class App extends Component {
         const gameTable = await game.methods.ShowTable().call();
 
         this.setState({
-            stage: gameTable.GameMessage,
+            gameMessage: gameTable.GameMessage,
             safeBalance: gameTable.BetPot,
             dealerHand: gameTable.DealerHand,
             playerHand: gameTable.PlayerHand,
@@ -121,7 +118,7 @@ class App extends Component {
         const gameTable = await game.methods.ShowTable().call();
 
         this.setState({
-            stage: gameTable.GameMessage,
+            gameMessage: gameTable.GameMessage,
             safeBalance: gameTable.BetPot,
             dealerHand: gameTable.DealerHand,
             playerHand: gameTable.PlayerHand,
@@ -137,17 +134,22 @@ class App extends Component {
         const suitStrings = [String.fromCharCode(9827), String.fromCharCode(9830), String.fromCharCode(9829), String.fromCharCode(9824)]
 
         let newGameButton;
-//        if (this.state.stage === "") {
+        if (this.state.gameMessage === "") {
             newGameButton = <button onClick={this.newGame.bind(this)}>New Game</button>;
-//        }
+        }
+
+        let dealButton;
+        if (this.state.gameMessage === "Contract Paid." || this.state.gameMessage === "Player's Turn.") {
+            dealButton = <button onClick={this.placeBet.bind(this)}>Deal</button>;
+        }
         
         let standButton;
-        if (this.state.stage === "Player's Turn.") {
+        if (this.state.gameMessage === "Player's Turn.") {
             standButton = <button onClick={this.stand.bind(this)}>Stand</button>;
         }
 
         let hitButton;
-        if (this.state.stage === "Player's Turn.") {
+        if (this.state.gameMessage === "Player's Turn.") {
             hitButton = <button onClick={this.hit.bind(this)}>Hit</button>;
         }
 
@@ -179,32 +181,30 @@ class App extends Component {
                 <div className="App">
                 <h1>Blackjack dApp Project</h1>
 
-                <br/><br/>
+                <br/>
+                <p>{this.state.gameMessage}</p>
 
-            Your deposit: <input value={this.state.safeBalance} onChange={this.onChangeDep}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Your deposit: <input value={this.state.setDeposit} onChange={this.onChangeDep}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 {newGameButton}
 
                 <br/><br/>
 
-                <h3>Dealer:</h3>
+                <table align="center"><tbody><tr><td width="400px">
+                    <h3>Dealer:</h3>
+                    <table align="center" style={{'fontSize': "24px"}}><tbody><tr>{dealerCards}</tr></tbody></table>
+                    <table align="center"><tbody><tr>{dealerScore}</tr></tbody></table></td>
 
-                <table align="center" style={{'fontSize': "24px"}}><tbody><tr>{dealerCards}</tr></tbody></table>
-                <table align="center"><tbody><tr>{dealerScore}</tr></tbody></table>
-
-                <br/><br/>
-
-                <h3>Your Cards:</h3>
-
-                <table align="center" style={{'fontSize': "24px"}}><tbody><tr>{playerCards}</tr></tbody></table>
-                <table align="center"><tbody><tr>{playerScore}{playerBet}</tr></tbody></table>
-
+                    <td width="400px"><h3>Your Cards:</h3>
+                    <table align="center" style={{'fontSize': "24px"}}><tbody><tr>{playerCards}</tr></tbody></table>
+                    <table align="center"><tbody><tr>{playerScore}{playerBet}</tr></tbody></table></td>
+                </tr></tbody></table>
             {standButton}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             {hitButton}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
                 <br/><br/>
 
             Place your bet: <input value={this.state.betValue} onChange={this.onChange}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button onClick={this.placeBet.bind(this)}>Deal</button>
+                {dealButton}
                 <br/>
                 <div> Maximum bet: {this.state.safeBalance} wei</div>
                 <br/>
@@ -213,7 +213,6 @@ class App extends Component {
                 <p/><hr style={{height: 2}}/>
 
                 <p>{String.fromCharCode(9830)} Blackjack Pays 3:2 {String.fromCharCode(9827)} Dealer Stands on Soft 17 {String.fromCharCode(9829)}</p>
-
             </div>
         );
     }

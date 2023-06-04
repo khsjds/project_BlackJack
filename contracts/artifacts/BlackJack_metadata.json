@@ -1,0 +1,379 @@
+{
+	"compiler": {
+		"version": "0.8.12+commit.f00d7308"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "Player",
+						"type": "address"
+					}
+				],
+				"name": "AfterCashOutEvent",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "GameId",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "Player",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "Amount",
+						"type": "uint256"
+					}
+				],
+				"name": "BeforeCashOutEvent",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "GameId",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "Player",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "Amount",
+						"type": "uint256"
+					}
+				],
+				"name": "CashOutEvent",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "GameId",
+						"type": "uint256"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "Player",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "Amount",
+						"type": "uint256"
+					}
+				],
+				"name": "NewGameEvent",
+				"type": "event"
+			},
+			{
+				"stateMutability": "nonpayable",
+				"type": "fallback"
+			},
+			{
+				"inputs": [],
+				"name": "CashOut",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "GetGame",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "Id",
+								"type": "uint256"
+							},
+							{
+								"internalType": "address",
+								"name": "Player",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "PlayerBet",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint8[]",
+								"name": "PlayerHand",
+								"type": "uint8[]"
+							},
+							{
+								"internalType": "uint8",
+								"name": "PlayerCardTotal",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint8[]",
+								"name": "DealerHand",
+								"type": "uint8[]"
+							},
+							{
+								"internalType": "uint8",
+								"name": "DealerCardTotal",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint256",
+								"name": "SafeBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "OriginalBalance",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "GamesPlayed",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint8",
+								"name": "PlayerAce",
+								"type": "uint8"
+							},
+							{
+								"internalType": "uint8",
+								"name": "DealerAce",
+								"type": "uint8"
+							},
+							{
+								"internalType": "bool",
+								"name": "IsRoundInProgress",
+								"type": "bool"
+							},
+							{
+								"internalType": "string",
+								"name": "GameMsg",
+								"type": "string"
+							}
+						],
+						"internalType": "struct BlackJack.Game",
+						"name": "game",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "Hit",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "NewGame",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "bet",
+						"type": "uint256"
+					}
+				],
+				"name": "PlaceBet",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ShowTable",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "GameMessage",
+						"type": "string"
+					},
+					{
+						"internalType": "uint8[]",
+						"name": "PlayerHand",
+						"type": "uint8[]"
+					},
+					{
+						"internalType": "uint8",
+						"name": "PlayerCardTotal",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint8[]",
+						"name": "DealerHand",
+						"type": "uint8[]"
+					},
+					{
+						"internalType": "uint8",
+						"name": "DealerCardTotal",
+						"type": "uint8"
+					},
+					{
+						"internalType": "uint256",
+						"name": "PlayerBet",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "BetPot",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "Stand",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"stateMutability": "payable",
+				"type": "receive"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {
+				"CashOut()": {
+					"details": "CashOut Cash out function for player before or after a game round."
+				},
+				"GetGame()": {
+					"details": "GetGame - helper function to get game info for msg.sender."
+				},
+				"Hit()": {
+					"details": "Hit Called on player's turn: draw a card and check for hands."
+				},
+				"NewGame()": {
+					"details": "NewGame Starts and initializes a new game with a player using msg.sender's address."
+				},
+				"PlaceBet(uint256)": {
+					"details": "PlaceBet Begins a new game round that saves game states including balance, bet and number of games.",
+					"params": {
+						"bet": "Requires 100 GWei < bet < 1 Ether to start a new round."
+					}
+				},
+				"ShowTable()": {
+					"details": "ShowTable - helper function to display game info for msg.sender."
+				},
+				"Stand()": {
+					"details": "Stand Called on player's turn: End player's turns and play dealer's hand. Dealer draws cards until 17 or bust, then check winner."
+				}
+			},
+			"title": "BlackJack A Blackjack game of smart contract, deploying to the blockchain.",
+			"version": 1
+		},
+		"userdoc": {
+			"events": {
+				"NewGameEvent(uint256,address,uint256)": {
+					"notice": "Events that Log important states (start game, and cash out/transfer)"
+				}
+			},
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/BlackJack.sol": "BlackJack"
+		},
+		"evmVersion": "london",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@openzeppelin/contracts/utils/Strings.sol": {
+			"keccak256": "0x3088eb2868e8d13d89d16670b5f8612c4ab9ff8956272837d8e90106c59c14a0",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://b81d9ff6559ea5c47fc573e17ece6d9ba5d6839e213e6ebc3b4c5c8fe4199d7f",
+				"dweb:/ipfs/QmPCW1bFisUzJkyjroY3yipwfism9RRCigCcK1hbXtVM8n"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/Math.sol": {
+			"keccak256": "0xe4455ac1eb7fc497bb7402579e7b4d64d928b846fce7d2b6fde06d366f21c2b3",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://cc8841b3cd48ad125e2f46323c8bad3aa0e88e399ec62acb9e57efa7e7c8058c",
+				"dweb:/ipfs/QmSqE4mXHA2BXW58deDbXE8MTcsL5JSKNDbm23sVQxRLPS"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/SafeMath.sol": {
+			"keccak256": "0x58b21219689909c4f8339af00813760337f7e2e7f169a97fe49e2896dcfb3b9a",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://ef8e012e946dec20e59f2d4446f4b44bb098f3fa8bac103b1b5112fff777447b",
+				"dweb:/ipfs/QmVTooKWcLkJ9W68yNX4MgdrbAKiAXwuRN9A7f4NkdcdtQ"
+			]
+		},
+		"@openzeppelin/contracts/utils/math/SignedMath.sol": {
+			"keccak256": "0xf92515413956f529d95977adc9b0567d583c6203fc31ab1c23824c35187e3ddc",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://c50fcc459e49a9858b6d8ad5f911295cb7c9ab57567845a250bf0153f84a95c7",
+				"dweb:/ipfs/QmcEW85JRzvDkQggxiBBLVAasXWdkhEysqypj9EaB6H2g6"
+			]
+		},
+		"contracts/BlackJack.sol": {
+			"keccak256": "0xa37bcbe55f6329b3749586cdc65dfed53f39e1c182110b4e5ae189ac447cbe6b",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6edbbbf407dae92cb38a6fc16c6a5107d73c6de82d3c05103e7ba39c41b60258",
+				"dweb:/ipfs/QmbjfnMeqM3Tf5KfXmLgGJZVx2FZgoXjQ5UrkGVyUqBVv5"
+			]
+		}
+	},
+	"version": 1
+}
