@@ -21,19 +21,16 @@ module.exports = {
     },
 
     networks: {
-
         development: {
             host: "127.0.0.1",
             port: "7545",
             network_id: "*",
             gas: 5500000,
         },
-
 //        rinkeby: {
 //            provider: () => new HDWalletProvider(mnemonic, infuraURL),
 //            network_id: 4,       // Rinkeby's network id
 //            gas: 5500000,
 //        },
-
     },
 };

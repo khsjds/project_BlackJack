@@ -8,7 +8,7 @@ class App extends Component {
 
     constructor(){
         super();
-        this.state = {setDeposit: '', safeBalance: '', betValue: '', web3: null, playerAccount: null, game: null , dealerHand: [], playerHand: []};
+        this.state = {setDeposit: '', betValue: '', web3: null, playerAccount: null, game: null , dealerHand: [], playerHand: []};
         this.onChange = this.onChange.bind(this);
         this.onChangeDep = this.onChangeDep.bind(this);
     }
@@ -45,6 +45,7 @@ class App extends Component {
             // example of interacting with the contract's methods.
             const gameTable = await gameInstance.methods.ShowTable().call();
             this.setState({ web3, playerAccount, game: gameInstance, safeBalance: gameTable.BetPot, gameMessage: gameTable.GameMessage});
+//            console.log(this.state);
 
         } catch (error) {
             // Catch any errors for any of the above operations.
@@ -107,11 +108,10 @@ class App extends Component {
             handScore: gameTable.PlayerCardTotal,
             bet: gameTable.PlayerBet,
         });
-
     };
 
     stand = async () => {
-            const { playerAccount , game } = this.state;
+        const { playerAccount , game } = this.state;
 
         await game.methods.Stand().send({ from: playerAccount, gas: 450000 });
 
@@ -126,7 +126,6 @@ class App extends Component {
             handScore: gameTable.PlayerCardTotal,
             bet: gameTable.PlayerBet,
         });
-
     };
 
     render() {
@@ -134,23 +133,16 @@ class App extends Component {
         const suitStrings = [String.fromCharCode(9827), String.fromCharCode(9830), String.fromCharCode(9829), String.fromCharCode(9824)]
 
         let newGameButton;
+        let dealButton;
+        let standButton;
+        let hitButton;
         if (this.state.gameMessage === "") {
             newGameButton = <button onClick={this.newGame.bind(this)}>New Game</button>;
-        }
-
-        let dealButton;
-        if (this.state.gameMessage === "Contract Paid." || this.state.gameMessage === "Player's Turn.") {
-            dealButton = <button onClick={this.placeBet.bind(this)}>Deal</button>;
-        }
-        
-        let standButton;
-        if (this.state.gameMessage === "Player's Turn.") {
+        } else if (this.state.gameMessage === "Player's Turn.") {
             standButton = <button onClick={this.stand.bind(this)}>Stand</button>;
-        }
-
-        let hitButton;
-        if (this.state.gameMessage === "Player's Turn.") {
             hitButton = <button onClick={this.hit.bind(this)}>Hit</button>;
+        } else {
+            dealButton = <button onClick={this.placeBet.bind(this)}>Deal</button>;
         }
 
         if (!this.state.web3) {
