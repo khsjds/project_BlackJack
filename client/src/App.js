@@ -131,7 +131,7 @@ class App extends Component {
     cashOut = async () => {
         const { playerAccount , game } = this.state;
 
-        await game.methods.CasuOut().send({ from: playerAccount, gas: 450000 });
+        await game.methods.CashOut().send({ from: playerAccount, gas: 450000 });
 
         const gameTable = await game.methods.ShowTable().call();
 
