@@ -128,6 +128,24 @@ class App extends Component {
         });
     };
 
+    cashOut = async () => {
+        const { playerAccount , game } = this.state;
+
+        await game.methods.CasuOut().send({ from: playerAccount, gas: 450000 });
+
+        const gameTable = await game.methods.ShowTable().call();
+
+        this.setState({
+            gameMessage: gameTable.GameMessage,
+            safeBalance: gameTable.BetPot,
+            dealerHand: gameTable.DealerHand,
+            playerHand: gameTable.PlayerHand,
+            dealerScore: gameTable.DealerCardTotal,
+            handScore: gameTable.PlayerCardTotal,
+            bet: gameTable.PlayerBet,
+        });
+    }
+
     render() {
         const rankStrings = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"]
         const suitStrings = [String.fromCharCode(9827), String.fromCharCode(9830), String.fromCharCode(9829), String.fromCharCode(9824)]
@@ -136,6 +154,7 @@ class App extends Component {
         let dealButton;
         let standButton;
         let hitButton;
+        let cashOutButton;
         if (this.state.gameMessage === "") {
             newGameButton = <button onClick={this.newGame.bind(this)}>New Game</button>;
         } else if (this.state.gameMessage === "Player's Turn.") {
@@ -143,6 +162,7 @@ class App extends Component {
             hitButton = <button onClick={this.hit.bind(this)}>Hit</button>;
         } else {
             dealButton = <button onClick={this.placeBet.bind(this)}>Deal</button>;
+            cashOutButton = <button onClick={this.cashOut.bind(this)}>Cash Out</button>;
         }
 
         if (!this.state.web3) {
@@ -193,7 +213,9 @@ class App extends Component {
             {standButton}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             {hitButton}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-                <br/><br/>
+                <br/>
+            {cashOutButton}
+                <br/>
 
             Place your bet: <input value={this.state.betValue} onChange={this.onChange}/> wei &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 {dealButton}

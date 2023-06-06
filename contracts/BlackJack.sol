@@ -306,6 +306,8 @@ contract BlackJack {
         AfterValueTransfer(msg.sender);
         assert(_map_playerToGame[msg.sender] == 0);
 
+        game.GameMsg = "";
+        
         emit CashOutEvent(game.Id, msg.sender, tempBalance);
     }
 
